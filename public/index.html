@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@picocss/pico@1.*/css/pico.min.css"
+    />
+    <script
+      src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+      async
+      defer
+    ></script>
+    <style>
+      .cf-turnstile {
+        margin-bottom: 18px;
+      }
+
+      .cf-turnstile iframe {
+        width: 100% !important;
+      }
+    </style>
+    <title>Cloudflare Turnstile demo</title>
+  </head>
+  <body>
+    <main class="container">
+      <h1>Cloudflare Turnstile demo</h1>
+      <form>
+        <label for="data">
+          Type something
+          <input type="text" name="data" id="data" required />
+        </label>
+
+        <div class="cf-turnstile" data-sitekey="0x4AAAAAAADCZrb1gEeBA-sB"></div>
+
+        <button>Submit</button>
+      </form>
+    </main>
+
+    <script>
+      document.querySelector('form').addEventListener('submit', async e => {
+        e.preventDefault();
+
+        const cfTurnstileResponse = e.target.querySelector(
+          'form input[name="cf-turnstile-response"]'
+        ).value;
+        const data = e.target.querySelector('form #data').value;
+
+        if (!cfTurnstileResponse) {
+          return alert('Please solve captcha!');
+        }
+
+        document.querySelector('form button').setAttribute('aria-busy', 'true');
+
+        const res = await fetch('/app', {
+          method: 'POST',
+          body: JSON.stringify({ cfTurnstileResponse, data }),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        document
+          .querySelector('form button')
+          .setAttribute('aria-busy', 'false');
+
+        const verifyData = await res.json();
+
+        alert(verifyData.message);
+
+        // refresh the page if successful
+        if (res.ok) {
+          location.reload();
+        }
+      });
+    </script>
+  </body>
+</html>

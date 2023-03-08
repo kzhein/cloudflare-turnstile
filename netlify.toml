@@ -1,0 +1,3 @@
+[build]
+  publish = "public"
+  edge_functions = "edge-functions"
