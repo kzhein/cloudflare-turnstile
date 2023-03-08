@@ -1,5 +1,3 @@
-import 'https://deno.land/x/dotenv/load.ts';
-
 export default async req => {
   try {
     const { cfTurnstileResponse, data } = await req.json();
