@@ -3,9 +3,7 @@ export default async req => {
     const { cfTurnstileResponse, data } = await req.json();
 
     if (!data || !cfTurnstileResponse) {
-      const error = new Error('No input data or token');
-      error.status = 400;
-      throw error;
+      throw Object.assign(new Error('No input data or token'), { status: 400 });
     }
 
     // this will always return status 200
@@ -24,9 +22,7 @@ export default async req => {
     ).then(res => res.json());
 
     if (!success) {
-      const error = new Error('Verification failed!');
-      error.status = 401;
-      throw error;
+      throw Object.assign(new Error('Verification failed!'), { status: 401 });
     }
 
     // then process the data such as putting it in db or something
